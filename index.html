@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CarryBee | Video Display</title>
 
 <style>
@@ -12,13 +13,12 @@
 body {
   margin: 0;
   background: #10141b;
-  color: #fff;
+  color: white;
   font-family: Arial, sans-serif;
-  min-height: 100vh;
 }
 
 header {
-  height: 65px;
+  height: 60px;
   padding: 0 5%;
   display: flex;
   align-items: center;
@@ -30,33 +30,27 @@ header {
 .logo {
   font-size: 23px;
   font-weight: 800;
-  letter-spacing: 1px;
-  color: #fff;
 }
 
 .logo span { color: #f5a623; }
 
 .live {
-  font-size: 12px;
   color: #42d392;
+  font-size: 12px;
   font-weight: bold;
 }
 
 main {
-  max-width: 1250px;
-  margin: 45px auto;
+  max-width: 1300px;
+  margin: 35px auto;
   padding: 0 20px;
 }
 
 .heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 18px;
-  gap: 10px;
 }
 
-h1 {
+.heading h1 {
   font-size: 23px;
   margin: 0;
 }
@@ -64,10 +58,11 @@ h1 {
 .subtitle {
   color: #9ba6b5;
   font-size: 13px;
-  margin-top: 8px;
+  margin-top: 7px;
 }
 
 .player-box {
+  width: 100%;
   background: #000;
   border-radius: 12px;
   overflow: hidden;
@@ -83,28 +78,28 @@ h1 {
 
 #player {
   position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  inset: 0;
 }
 
 .controls {
-  padding: 17px 20px;
-  background: #1b232e;
+  padding: 15px 20px;
+  background: #171e28;
 }
 
 .progress {
   width: 100%;
-  margin-bottom: 15px;
-  cursor: pointer;
   accent-color: #f5a623;
+  cursor: pointer;
+  margin-bottom: 12px;
 }
 
 .control-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .left, .right {
@@ -114,25 +109,29 @@ h1 {
 }
 
 button {
-  background: transparent;
   border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 9px;
   border-radius: 6px;
+  background: transparent;
+  color: white;
+  padding: 9px 12px;
+  font-size: 15px;
+  cursor: pointer;
 }
 
-button:hover { background: #354252; }
+button:hover {
+  background: #354252;
+}
 
 .play-btn {
   background: #f5a623;
   color: #111;
   font-weight: bold;
-  min-width: 90px;
+  min-width: 85px;
 }
 
-.play-btn:hover { background: #ffc04c; }
+.play-btn:hover {
+  background: #ffc04c;
+}
 
 #volume {
   width: 90px;
@@ -146,33 +145,58 @@ button:hover { background: #354252; }
   white-space: nowrap;
 }
 
-#status {
-  color: #9ba6b5;
-  font-size: 12px;
-  margin-top: 12px;
-}
-
 footer {
   text-align: center;
-  padding: 25px;
   color: #788494;
   font-size: 12px;
+  padding: 25px;
+}
+
+/* FULL PAGE MODE */
+
+.player-box:fullscreen {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+.player-box:fullscreen .video-area {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.player-box:fullscreen #player {
+  width: 100%;
+  height: 100%;
+}
+
+.player-box:fullscreen .controls {
+  flex-shrink: 0;
+  padding: 10px 22px;
+}
+
+.player-box:fullscreen .progress {
+  margin-bottom: 5px;
 }
 
 @media(max-width:600px) {
-  main { margin: 25px auto; }
-  h1 { font-size: 18px; }
-  .controls { padding: 12px; }
-  .control-row { flex-wrap: wrap; }
-  #volume { width: 65px; }
+  main { margin: 20px auto; }
+  .heading h1 { font-size: 19px; }
+  .controls { padding: 10px; }
   .left, .right { gap: 3px; }
-  button { padding: 7px; }
+  button { padding: 8px; }
+  #volume { width: 60px; }
+  .control-row { flex-wrap: wrap; }
 }
 
-:fullscreen .video-area {
-  aspect-ratio: auto;
-  height: calc(100vh - 105px);
-}
 </style>
 </head>
 
@@ -186,11 +210,9 @@ footer {
 <main>
 
   <div class="heading">
-    <div>
-      <h1>Central Sort Operations</h1>
-      <div class="subtitle">
-        CarryBee Video Display & Continuous Playback
-      </div>
+    <h1>Central Sort Operations</h1>
+    <div class="subtitle">
+      CarryBee Video Display
     </div>
   </div>
 
@@ -215,17 +237,24 @@ footer {
       <div class="control-row">
 
         <div class="left">
-          <button class="play-btn" id="playBtn"
+
+          <button class="play-btn"
+            id="playBtn"
             onclick="togglePlay()">▶ Play</button>
 
-          <button onclick="restartVideo()">↻</button>
+          <button onclick="restartVideo()" title="Restart">
+            ↻
+          </button>
 
           <span id="time">00:00 / 00:00</span>
+
         </div>
 
         <div class="right">
+
           <button id="muteBtn"
-            onclick="toggleMute()">🔊</button>
+            onclick="toggleMute()"
+            title="Mute / Unmute">🔊</button>
 
           <input
             type="range"
@@ -236,14 +265,15 @@ footer {
             aria-label="Volume"
           >
 
-          <button onclick="toggleFullscreen()">⛶</button>
+          <button onclick="toggleFullscreen()"
+            id="fullscreenBtn"
+            title="Full Page View">⛶</button>
+
         </div>
 
       </div>
-
-      <div id="status">Connecting to video...</div>
-
     </div>
+
   </div>
 
 </main>
@@ -253,6 +283,7 @@ footer {
 </footer>
 
 <script>
+
 const VIDEO_ID = "OtBtGI_HU30";
 
 let player;
@@ -263,8 +294,9 @@ const playBtn = document.getElementById("playBtn");
 const muteBtn = document.getElementById("muteBtn");
 const volumeSlider = document.getElementById("volume");
 const progress = document.getElementById("progress");
-const statusText = document.getElementById("status");
 const timeText = document.getElementById("time");
+const playerBox = document.getElementById("playerBox");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
 
 function loadYouTubeAPI() {
   const tag = document.createElement("script");
@@ -275,6 +307,7 @@ function loadYouTubeAPI() {
 window.onYouTubeIframeAPIReady = function() {
 
   player = new YT.Player("player", {
+
     videoId: VIDEO_ID,
 
     playerVars: {
@@ -285,11 +318,11 @@ window.onYouTubeIframeAPIReady = function() {
       rel: 0,
       loop: 1,
       playlist: VIDEO_ID,
-      mute: 1,
-      modestbranding: 1
+      mute: 1
     },
 
     events: {
+
       onReady: function(event) {
         ready = true;
 
@@ -297,37 +330,21 @@ window.onYouTubeIframeAPIReady = function() {
         event.target.mute();
         event.target.playVideo();
 
-        statusText.textContent =
-          "Video ready | Continuous loop enabled";
-
         updateButtons();
       },
 
       onStateChange: function(event) {
-        updateButtons();
 
-        if(event.data === YT.PlayerState.PLAYING) {
-          statusText.textContent =
-            "Playing | Continuous loop enabled";
-        }
+        updateButtons();
 
         if(event.data === YT.PlayerState.ENDED) {
           player.seekTo(0, true);
           player.playVideo();
         }
-
-        if(event.data === YT.PlayerState.PAUSED) {
-          statusText.textContent = "Video paused";
-        }
-
-        if(event.data === YT.PlayerState.BUFFERING) {
-          statusText.textContent = "Buffering video...";
-        }
       },
 
       onError: function() {
-        statusText.textContent =
-          "Video unavailable or embedding is restricted.";
+        playBtn.textContent = "Video Unavailable";
       }
     }
   });
@@ -345,6 +362,7 @@ function togglePlay() {
 
 function restartVideo() {
   if(!ready) return;
+
   player.seekTo(0, true);
   player.playVideo();
 }
@@ -355,7 +373,6 @@ function toggleMute() {
   if(player.isMuted()) {
     player.unMute();
     player.setVolume(Number(volumeSlider.value) || 60);
-    player.playVideo();
   } else {
     player.mute();
   }
@@ -364,9 +381,11 @@ function toggleMute() {
 }
 
 volumeSlider.addEventListener("input", function() {
+
   if(!ready) return;
 
   const value = Number(this.value);
+
   player.setVolume(value);
 
   if(value === 0) {
@@ -391,6 +410,7 @@ function updateButtons() {
 }
 
 function formatTime(seconds) {
+
   if(!Number.isFinite(seconds)) return "00:00";
 
   const m = Math.floor(seconds / 60);
@@ -405,6 +425,7 @@ progress.addEventListener("input", function() {
 });
 
 progress.addEventListener("change", function() {
+
   if(!ready) return;
 
   const duration = player.getDuration();
@@ -415,38 +436,58 @@ progress.addEventListener("change", function() {
 });
 
 function updateProgress() {
-  if(ready) {
-    const duration = player.getDuration();
-    const current = player.getCurrentTime();
 
-    if(duration > 0) {
-      if(!seeking) {
-        progress.value = (current / duration) * 100;
-      }
+  if(!ready) return;
 
-      timeText.textContent =
-        formatTime(current) + " / " + formatTime(duration);
+  const duration = player.getDuration();
+  const current = player.getCurrentTime();
+
+  if(duration > 0) {
+
+    if(!seeking) {
+      progress.value = (current / duration) * 100;
     }
 
-    updateButtons();
+    timeText.textContent =
+      formatTime(current) + " / " + formatTime(duration);
   }
+
+  updateButtons();
 }
 
+/* FULL PAGE TOGGLE */
+
 function toggleFullscreen() {
-  const box = document.getElementById("playerBox");
 
   if(!document.fullscreenElement) {
-    if(box.requestFullscreen) {
-      box.requestFullscreen();
+
+    if(playerBox.requestFullscreen) {
+      playerBox.requestFullscreen();
     }
+
   } else {
+
     document.exitFullscreen();
   }
 }
 
+document.addEventListener("fullscreenchange", function() {
+
+  const isFull = !!document.fullscreenElement;
+
+  fullscreenBtn.textContent = isFull ? "⛶ Exit" : "⛶";
+
+  if(ready) {
+    setTimeout(function() {
+      player.playVideo();
+    }, 300);
+  }
+});
+
 setInterval(updateProgress, 1000);
 
 loadYouTubeAPI();
+
 </script>
 
 </body>
