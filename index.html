@@ -5,279 +5,225 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#071426">
-<title>CarryBee | Central Sort Operations</title>
+
+<title>CarryBee | Operations Training</title>
 
 <style>
 :root {
-  --bg: #071426;
-  --panel: #101f35;
-  --yellow: #ffc928;
-  --text: #ffffff;
-  --muted: #9aabc1;
+  --bg:#071426;
+  --panel:#102139;
+  --yellow:#ffc928;
+  --white:#fff;
+  --muted:#a2b1c5;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
 body {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at 50% 0%, #18365a 0%, transparent 45%),
-    var(--bg);
-  color: var(--text);
-  font-family: Inter, Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#1a3557,transparent 45%),var(--bg);
+  color:var(--white);
+  font-family:Arial,Helvetica,sans-serif;
+  display:flex;
+  flex-direction:column;
 }
 
 header {
-  height: 76px;
-  padding: 0 6%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  background: rgba(5,17,33,.8);
+  height:75px;
+  padding:0 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(5,17,33,.85);
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:23px;
+  font-weight:800;
 }
 
-.brand-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: var(--yellow);
-  color: #101a2a;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  font-size: 22px;
+.logo {
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:var(--yellow);
+  color:#101a2a;
+  font-size:24px;
 }
 
-.brand-name {
-  font-size: 21px;
-  font-weight: 800;
-  letter-spacing: .5px;
+.brand span {
+  color:var(--yellow);
 }
 
-.brand-name span {
-  color: var(--yellow);
-}
-
-.header-tag {
-  color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+.header-right {
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:2px;
 }
 
 main {
-  width: min(1100px, 92%);
-  margin: 45px auto;
-  flex: 1;
+  width:min(1100px,92%);
+  margin:45px auto;
+  flex:1;
 }
 
 .heading {
-  text-align: center;
-  margin-bottom: 28px;
+  text-align:center;
+  margin-bottom:28px;
 }
 
-.heading .eyebrow {
-  color: var(--yellow);
-  font-size: 12px;
-  letter-spacing: 3px;
-  font-weight: 700;
-  margin-bottom: 12px;
+.eyebrow {
+  color:var(--yellow);
+  font-size:12px;
+  font-weight:bold;
+  letter-spacing:3px;
+  margin-bottom:12px;
 }
 
-.heading h1 {
-  font-size: clamp(25px, 4vw, 39px);
-  font-weight: 800;
-  margin-bottom: 10px;
+h1 {
+  font-size:clamp(25px,4vw,40px);
+  margin-bottom:12px;
 }
 
-.heading p {
-  color: var(--muted);
-  font-size: 14px;
+.subtitle {
+  color:var(--muted);
+  font-size:14px;
 }
 
 .player-card {
-  padding: 12px;
-  background: rgba(255,255,255,.045);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 18px;
-  box-shadow: 0 25px 70px rgba(0,0,0,.4);
+  padding:12px;
+  border-radius:18px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 25px 70px rgba(0,0,0,.4);
 }
 
-.video-container {
-  position: relative;
-  background: #000;
-  border-radius: 12px;
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
+.video-box {
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:#000;
+  border-radius:12px;
 }
 
-video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  background: #000;
+.video-box iframe {
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
 }
 
-.center-play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.4);
-  background: rgba(255,201,40,.95);
-  color: #111;
-  font-size: 29px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: .2s;
+.loading {
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
+  color:var(--yellow);
+  font-size:14px;
+  z-index:0;
+  pointer-events:none;
 }
 
-.center-play:hover {
-  transform: translate(-50%,-50%) scale(1.1);
-}
-
-.video-container.playing .center-play {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.video-container:hover .center-play {
-  opacity: 1;
+.video-box iframe {
+  position:relative;
+  z-index:1;
 }
 
 .controls {
-  padding: 16px 10px 8px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:12px;
+  padding:17px 8px 8px;
 }
 
-.progress-area {
-  height: 5px;
-  background: #34445a;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-bottom: 16px;
+.btn {
+  border:0;
+  background:transparent;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+  padding:9px 15px;
+  border-radius:7px;
+  transition:.2s;
 }
 
-.progress-bar {
-  width: 0%;
-  height: 100%;
-  background: var(--yellow);
-  border-radius: 10px;
-  position: relative;
+.btn:hover {
+  background:var(--yellow);
+  color:#111;
 }
 
-.progress-bar::after {
-  content: "";
-  position: absolute;
-  right: -5px;
-  top: -3px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: white;
-}
-
-.control-row {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-
-.control-btn {
-  border: 0;
-  background: transparent;
-  color: white;
-  cursor: pointer;
-  font-size: 19px;
-  min-width: 27px;
-}
-
-.control-btn:hover {
-  color: var(--yellow);
-}
-
-.time {
-  color: var(--muted);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
+.primary {
+  background:var(--yellow);
+  color:#111;
+  font-weight:bold;
 }
 
 .spacer {
-  flex: 1;
+  flex:1;
 }
 
-.volume {
-  width: 85px;
-  accent-color: var(--yellow);
-  cursor: pointer;
+.status {
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:1px;
 }
 
-.quality-label {
-  color: var(--muted);
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-
-.info-panel {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
-  margin-top: 20px;
+.info {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:20px;
 }
 
 .info-item {
-  padding: 17px;
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.035);
-  border-radius: 12px;
+  padding:18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
 }
 
 .info-item small {
-  display: block;
-  color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 1.3px;
-  margin-bottom: 8px;
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:1.5px;
+  margin-bottom:9px;
 }
 
 .info-item strong {
-  font-size: 13px;
+  font-size:13px;
 }
 
 footer {
-  padding: 22px;
-  text-align: center;
-  color: #71839b;
-  font-size: 11px;
-  border-top: 1px solid rgba(255,255,255,.07);
-  letter-spacing: 1px;
+  padding:22px;
+  text-align:center;
+  color:#71839b;
+  font-size:11px;
+  letter-spacing:1px;
+  border-top:1px solid rgba(255,255,255,.07);
 }
 
 @media(max-width:600px) {
-  header { padding: 0 5%; }
-  .header-tag { display: none; }
-  main { margin: 30px auto; }
-  .info-panel { grid-template-columns: 1fr; }
-  .volume, .quality-label { display: none; }
-  .control-row { gap: 10px; }
-  .center-play { width: 58px; height: 58px; }
+  header {padding:0 5%;}
+  .header-right {display:none;}
+  main {margin:30px auto;}
+  .info {grid-template-columns:1fr;}
+  .controls {gap:7px;}
+  .btn {padding:9px 10px;}
 }
 </style>
 </head>
@@ -286,10 +232,10 @@ footer {
 
 <header>
   <div class="brand">
-    <div class="brand-mark">C</div>
-    <div class="brand-name">Carry<span>Bee</span></div>
+    <div class="logo">C</div>
+    <div>Carry<span>Bee</span></div>
   </div>
-  <div class="header-tag">Operations Learning Portal</div>
+  <div class="header-right">OPERATIONS LEARNING PORTAL</div>
 </header>
 
 <main>
@@ -297,72 +243,50 @@ footer {
   <section class="heading">
     <div class="eyebrow">CENTRAL SORT OPERATIONS</div>
     <h1>Inbound Sorting & Dispatch Process</h1>
-    <p>Operational Training & Workflow Demonstration</p>
+    <p class="subtitle">Operational Training & Workflow Demonstration</p>
   </section>
 
   <section class="player-card">
 
-    <div class="video-container" id="videoContainer">
+    <div class="video-box" id="videoBox">
 
-      <!-- Replace this path with your own MP4 video -->
-      <video
-        id="video"
-        preload="metadata"
-        playsinline
-        disablePictureInPicture
-        controlsList="nodownload noremoteplayback"
-      >
-        <source src="videos/carrybee-training.mp4" type="video/mp4">
-        Your browser does not support HTML5 video.
-      </video>
+      <div class="loading" id="loading">
+        Loading Training Video...
+      </div>
 
-      <button class="center-play" id="centerPlay" aria-label="Play video">
-        ▶
-      </button>
+      <div id="youtubePlayer"></div>
 
     </div>
 
     <div class="controls">
 
-      <div class="progress-area" id="progressArea">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
+      <button class="btn primary" id="playBtn">
+        ▶ Play
+      </button>
 
-      <div class="control-row">
+      <button class="btn" id="restartBtn">
+        ↺ Restart
+      </button>
 
-        <button class="control-btn" id="playBtn" title="Play / Pause">▶</button>
+      <button class="btn" id="muteBtn">
+        🔊 Mute
+      </button>
 
-        <button class="control-btn" id="restartBtn" title="Restart">↺</button>
+      <div class="spacer"></div>
 
-        <span class="time" id="currentTime">00:00</span>
-        <span class="time">/</span>
-        <span class="time" id="duration">00:00</span>
+      <span class="status" id="status">
+        READY
+      </span>
 
-        <div class="spacer"></div>
+      <button class="btn" id="fullscreenBtn">
+        ⛶ Fullscreen
+      </button>
 
-        <button class="control-btn" id="muteBtn" title="Mute / Unmute">🔊</button>
-
-        <input
-          class="volume"
-          id="volume"
-          type="range"
-          min="0"
-          max="1"
-          step="0.05"
-          value="1"
-          aria-label="Volume"
-        >
-
-        <span class="quality-label">HD VIDEO</span>
-
-        <button class="control-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
-
-      </div>
     </div>
 
   </section>
 
-  <section class="info-panel">
+  <section class="info">
 
     <div class="info-item">
       <small>DEPARTMENT</small>
@@ -388,158 +312,110 @@ footer {
 </footer>
 
 <script>
-const video = document.getElementById("video");
-const container = document.getElementById("videoContainer");
+const VIDEO_ID = "OtBtGI_HU30";
+
+let player;
+let isMuted = false;
 
 const playBtn = document.getElementById("playBtn");
-const centerPlay = document.getElementById("centerPlay");
-const restartBtn = document.getElementById("restartBtn");
 const muteBtn = document.getElementById("muteBtn");
-const volume = document.getElementById("volume");
-const fullscreenBtn = document.getElementById("fullscreenBtn");
+const statusText = document.getElementById("status");
+const loading = document.getElementById("loading");
 
-const progressArea = document.getElementById("progressArea");
-const progressBar = document.getElementById("progressBar");
+function onYouTubeIframeAPIReady() {
 
-const currentTime = document.getElementById("currentTime");
-const duration = document.getElementById("duration");
+  player = new YT.Player("youtubePlayer", {
 
-function formatTime(seconds) {
-  if (!Number.isFinite(seconds)) return "00:00";
+    videoId: VIDEO_ID,
 
-  const min = Math.floor(seconds / 60);
-  const sec = Math.floor(seconds % 60);
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      modestbranding: 1,
+      rel: 0,
+      fs: 0,
+      disablekb: 1,
+      iv_load_policy: 3,
+      playsinline: 1,
+      loop: 1,
+      playlist: VIDEO_ID
+    },
 
-  return String(min).padStart(2,"0") + ":" +
-         String(sec).padStart(2,"0");
-}
+    events: {
+      onReady: function() {
+        loading.style.display = "none";
+        statusText.textContent = "READY";
+      },
 
-function togglePlay() {
-  if (video.paused) {
-    video.play().catch(() => {
-      alert("Video could not be played. Please check the MP4 file path.");
-    });
-  } else {
-    video.pause();
-  }
-}
+      onStateChange: function(event) {
 
-playBtn.addEventListener("click", togglePlay);
-centerPlay.addEventListener("click", togglePlay);
-video.addEventListener("click", togglePlay);
+        if (event.data === YT.PlayerState.PLAYING) {
+          playBtn.textContent = "Ⅱ Pause";
+          statusText.textContent = "NOW PLAYING";
+        }
 
-video.addEventListener("play", () => {
-  playBtn.textContent = "Ⅱ";
-  container.classList.add("playing");
-});
+        if (event.data === YT.PlayerState.PAUSED) {
+          playBtn.textContent = "▶ Play";
+          statusText.textContent = "PAUSED";
+        }
 
-video.addEventListener("pause", () => {
-  playBtn.textContent = "▶";
-  container.classList.remove("playing");
-});
+        if (event.data === YT.PlayerState.ENDED) {
+          player.seekTo(0);
+          player.playVideo();
+        }
+      },
 
-restartBtn.addEventListener("click", () => {
-  video.currentTime = 0;
-  video.play().catch(() => {});
-});
-
-video.addEventListener("timeupdate", () => {
-  if (!video.duration) return;
-
-  const percentage = (video.currentTime / video.duration) * 100;
-
-  progressBar.style.width = percentage + "%";
-  currentTime.textContent = formatTime(video.currentTime);
-});
-
-video.addEventListener("loadedmetadata", () => {
-  duration.textContent = formatTime(video.duration);
-});
-
-progressArea.addEventListener("click", (event) => {
-  if (!video.duration) return;
-
-  const rect = progressArea.getBoundingClientRect();
-  const position = (event.clientX - rect.left) / rect.width;
-
-  video.currentTime = Math.max(
-    0,
-    Math.min(video.duration, position * video.duration)
-  );
-});
-
-muteBtn.addEventListener("click", () => {
-  video.muted = !video.muted;
-  updateMuteButton();
-});
-
-volume.addEventListener("input", () => {
-  video.volume = Number(volume.value);
-  video.muted = video.volume === 0;
-  updateMuteButton();
-});
-
-function updateMuteButton() {
-  muteBtn.textContent = video.muted || video.volume === 0 ? "🔇" : "🔊";
-}
-
-fullscreenBtn.addEventListener("click", async () => {
-  try {
-    if (!document.fullscreenElement) {
-      if (container.requestFullscreen) {
-        await container.requestFullscreen();
-      } else if (video.webkitEnterFullscreen) {
-        video.webkitEnterFullscreen();
+      onError: function() {
+        loading.textContent =
+          "Video unavailable. Please check YouTube permissions.";
+        loading.style.display = "flex";
       }
-    } else {
-      await document.exitFullscreen();
     }
-  } catch (error) {
-    console.log("Fullscreen is not available.", error);
+  });
+}
+
+playBtn.addEventListener("click", function() {
+  if (!player || !player.playVideo) return;
+
+  if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+    player.pauseVideo();
+  } else {
+    player.playVideo();
   }
 });
 
-video.addEventListener("ended", () => {
-  video.currentTime = 0;
-  video.play().catch(() => {});
+document.getElementById("restartBtn").addEventListener("click", function() {
+  if (!player || !player.seekTo) return;
+  player.seekTo(0);
+  player.playVideo();
 });
 
-// Keyboard shortcuts
-document.addEventListener("keydown", (event) => {
-  if (
-    event.target.tagName === "INPUT" ||
-    event.target.tagName === "TEXTAREA"
-  ) return;
+muteBtn.addEventListener("click", function() {
+  if (!player || !player.mute) return;
 
-  switch (event.key.toLowerCase()) {
-    case " ":
-    case "k":
-      event.preventDefault();
-      togglePlay();
-      break;
+  if (isMuted) {
+    player.unMute();
+    muteBtn.textContent = "🔊 Mute";
+    isMuted = false;
+  } else {
+    player.mute();
+    muteBtn.textContent = "🔇 Unmute";
+    isMuted = true;
+  }
+});
 
-    case "m":
-      video.muted = !video.muted;
-      updateMuteButton();
-      break;
+document.getElementById("fullscreenBtn").addEventListener("click", function() {
+  const box = document.getElementById("videoBox");
 
-    case "f":
-      fullscreenBtn.click();
-      break;
-
-    case "arrowright":
-      video.currentTime = Math.min(
-        video.duration || 0,
-        video.currentTime + 5
-      );
-      break;
-
-    case "arrowleft":
-      video.currentTime = Math.max(0, video.currentTime - 5);
-      break;
+  if (!document.fullscreenElement) {
+    box.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
   }
 });
 </script>
+
+<script src="https://www.youtube.com/iframe_api"></script>
 
 </body>
 </html>
