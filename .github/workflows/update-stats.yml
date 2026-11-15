@@ -1,0 +1,65 @@
+/**
+ * CarryBee training analytics backend (Google Apps Script)
+ * Stores every play/complete event in a Google Sheet tab named "events".
+ */
+const ACCESS_KEY = 'Shaheenm@12';   // dashboard password
+const SHEET_NAME = 'events';
+const TZ = 'Asia/Dhaka';
+
+function getSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(SHEET_NAME);
+  if (!sh) {
+    sh = ss.insertSheet(SHEET_NAME);
+    sh.appendRow(['timestamp', 'date', 'type', 'device']);
+    sh.getRange('B:B').setNumberFormat('@');   // keep dates as plain text
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Called by index.html every time the video plays or completes
+function doPost(e) {
+  try {
+    const d = JSON.parse(e.postData.contents);
+    if (d.type !== 'play' && d.type !== 'complete') return json_({ ok: false });
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.date))) return json_({ ok: false });
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    getSheet_().appendRow([new Date(), String(d.date), d.type, String(d.device || '').slice(0, 40)]);
+    lock.releaseLock();
+    return json_({ ok: true });
+  } catch (err) {
+    return json_({ ok: false, error: String(err) });
+  }
+}
+
+// Called by dashboard.html - returns date-wise totals
+function doGet(e) {
+  if (!e.parameter || e.parameter.key !== ACCESS_KEY) {
+    return json_({ ok: false, error: 'unauthorized' });
+  }
+  const rows = getSheet_().getDataRange().getValues();
+  rows.shift(); // header
+  const map = {};
+  rows.forEach(function (r) {
+    let date = r[1];
+    if (date instanceof Date) date = Utilities.formatDate(date, TZ, 'yyyy-MM-dd');
+    date = String(date);
+    if (!date) return;
+    const m = map[date] || (map[date] = { date: date, plays: 0, completes: 0, devs: {} });
+    if (r[2] === 'play') m.plays++;
+    else if (r[2] === 'complete') m.completes++;
+    m.devs[r[3]] = 1;
+  });
+  const days = Object.keys(map).sort().map(function (k) {
+    const m = map[k];
+    return { date: k, plays: m.plays, completes: m.completes, unique: Object.keys(m.devs).length };
+  });
+  return json_({ ok: true, days: days });
+}
