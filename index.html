@@ -578,7 +578,11 @@ const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
 // Paste your Google Apps Script Web App URL here (same value as in dashboard.html).
 // Leave empty to save counts in this browser only (demo mode).
 const TRACK_URL = "https://script.google.com/macros/s/AKfycbzkylkghJ69_a3TUkPsBv0AhrdYucm_fdTsc7WlPCatpNZJR-YI8_kISd-WCR3CB7M--w/exec";
-const dayFmt = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dhaka" });
+function bdDate(d) {
+  const p = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Dhaka", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(d);
+  const g = k => p.find(x => x.type === k).value;
+  return g("year") + "-" + g("month") + "-" + g("day");
+}
 function deviceId() {
   try {
     let d = localStorage.getItem("cb_device");
@@ -587,10 +591,10 @@ function deviceId() {
   } catch (e) { return "anon"; }
 }
 function track(type) {
-  const ev = { ts: Date.now(), date: dayFmt.format(new Date()), type: type, device: deviceId() };
+  const ev = { ts: Date.now(), date: bdDate(new Date()), type: type, device: deviceId() };
   if (TRACK_URL) {
     try {
-      fetch(TRACK_URL, { method: "POST", mode: "no-cors", keepalive: true,
+      fetch(TRACK_URL, { method: "POST", mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(ev) }).catch(() => {});
     } catch (e) {}
   } else {
@@ -920,8 +924,7 @@ window.addEventListener("beforeunload", () => { if (started) saveProgress(); });
 
 
 const TZ = "Asia/Dhaka";
-const fmtKey = new Intl.DateTimeFormat("en-CA", { timeZone: TZ });
-const dayKey = d => fmtKey.format(d);
+const dayKey = d => bdDate(d);
 const nf = new Intl.NumberFormat("en-US");
 
 let days = [];          // [{date, plays, completes, unique}] from source
@@ -964,9 +967,17 @@ function loadLocal() {
   return Object.values(map).map(r => ({ date: r.date, plays: r.plays, completes: r.completes, unique: r.devs.size }));
 }
 async function loadRemote() {
-  const res = await fetch(TRACK_URL + "?key=" + encodeURIComponent(accessKey) + "&t=" + Date.now());
-  const j = await res.json();
-  if (!j.ok) { const err = new Error(j.error || "failed"); err.code = j.error; throw err; }
+  let res, text;
+  try {
+    res = await fetch(TRACK_URL + "?key=" + encodeURIComponent(accessKey) + "&t=" + Date.now());
+    text = await res.text();
+  } catch (e) {
+    const err = new Error("network"); err.code = "network"; throw err;
+  }
+  let j;
+  try { j = JSON.parse(text); }
+  catch (e) { const err = new Error("notjson"); err.code = "notjson"; throw err; }
+  if (!j.ok) { const err = new Error(j.error || "failed"); err.code = j.error || "failed"; throw err; }
   return j.days || [];
 }
 
@@ -974,10 +985,15 @@ async function load() {
   $("refreshBtn").disabled = true;
   try {
     if (TRACK_URL) {
+      days = await loadRemote();
       $("status").classList.remove("local");
       $("statusText").textContent = "Live · Google Sheets";
-      days = await loadRemote();
-      $("notice").className = "notice";
+      if (days.length === 0) {
+        $("notice").className = "notice show";
+        $("notice").innerHTML = "<b>Connected to Google Sheets.</b> No plays have been recorded yet. Play the training video for a few seconds, then press <b>Refresh</b>.";
+      } else {
+        $("notice").className = "notice";
+      }
     } else {
       $("status").classList.add("local");
       $("statusText").textContent = "Local demo mode";
@@ -994,8 +1010,15 @@ async function load() {
       $("gate").classList.add("show"); $("keyInput").focus();
       if ($("keyInput").dataset.tried) $("gateErr").textContent = "That key is not correct. Try again.";
     } else {
+      const msg = {
+        network: "<b>Cannot reach Google.</b> Check your internet and that the Apps Script link in <code>TRACK_URL</code> is exactly the one ending in <code>/exec</code>.",
+        notjson: "<b>Google sent a page instead of data.</b> In Apps Script open <b>Deploy &rarr; Manage deployments</b>, edit the deployment, set <b>Who has access</b> to <b>Anyone</b>, choose <b>New version</b> and press Deploy."
+      }[e.code] || ("<b>Google returned an error:</b> " + String(e.code || e.message) + ". Open Apps Script &rarr; Executions to see details.");
+      $("gate").classList.remove("show");
+      $("status").classList.add("local");
+      $("statusText").textContent = "Connection problem";
       $("notice").className = "notice show err";
-      $("notice").textContent = "Could not load data. Check your connection and that the Apps Script URL is deployed for \"Anyone\", then press Refresh.";
+      $("notice").innerHTML = msg + " Then press <b>Refresh</b>.";
       days = []; render();
     }
   }
