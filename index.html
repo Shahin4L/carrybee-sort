@@ -311,12 +311,6 @@ footer{padding:22px;border-top:1px solid var(--border);text-align:center;color:#
           </button>
         </div>
 
-        <div class="panel p-ended">
-          <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-          <h2>Training video completed</h2>
-          <p>You have watched the full Inbound Sorting &amp; Dispatch module.</p>
-          <div class="btn-row"><button class="btn primary" id="replayBtn">Watch again</button></div>
-        </div>
 
         <div class="panel p-error">
           <h2>Video can't be loaded</h2>
@@ -481,9 +475,10 @@ function onYouTubeIframeAPIReady() {
             if (player.getPlayerState() === S.PAUSED) { setCover("paused"); showUI(); }
           }, 180);
         } else if (e.data === S.ENDED) {
+          // loop: restart immediately, no end screen
           progress.t = 0; progress.max = duration; saveProgress(); renderWatched();
-          player.pauseVideo();
-          setCover("ended"); showUI();
+          player.seekTo(0, true);
+          player.playVideo();
         }
       },
       onError() {
@@ -530,6 +525,11 @@ function tick() {
   $("cur").textContent = fmt(dragging ? Number($("cur").dataset.v) : cur);
   $("dur").textContent = fmt(duration);
   $("buffered").style.width = (player.getVideoLoadedFraction() * 100) + "%";
+
+  if (isPlaying() && duration > 2 && cur >= duration - 0.35) {
+    player.seekTo(0, true);
+    return;
+  }
 
   if (isPlaying()) {
     progress.t = cur;
@@ -581,7 +581,6 @@ $("startBtn").onclick = () => startFrom(0);
 $("resumeBtn").onclick = () => startFrom(progress.t);
 $("startOverBtn").onclick = () => { progress.t = 0; startFrom(0); };
 $("resumePausedBtn").onclick = () => player.playVideo();
-$("replayBtn").onclick = () => { player.seekTo(0, true); player.playVideo(); };
 $("playBtn").onclick = playPause;
 $("backBtn").onclick = () => seekBy(-10);
 $("fwdBtn").onclick = () => seekBy(10);
@@ -590,7 +589,6 @@ $("fwdBtn").onclick = () => seekBy(10);
 let clickTimer;
 $("shield").addEventListener("click", () => {
   if (!started) { startFrom(progress.t > 5 && progress.t < duration - 5 ? progress.t : 0); return; }
-  if (cover.dataset.state === "ended") return;
   clearTimeout(clickTimer);
   clickTimer = setTimeout(() => { playPause(); }, 220);
 });
