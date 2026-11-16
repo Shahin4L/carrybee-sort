@@ -967,17 +967,16 @@ function loadLocal() {
   return Object.values(map).map(r => ({ date: r.date, plays: r.plays, completes: r.completes, unique: r.devs.size }));
 }
 async function loadRemote() {
-  let res, text;
-  try {
-    res = await fetch(TRACK_URL + "?key=" + encodeURIComponent(accessKey) + "&t=" + Date.now());
-    text = await res.text();
-  } catch (e) {
-    const err = new Error("network"); err.code = "network"; throw err;
-  }
-  let j;
-  try { j = JSON.parse(text); }
-  catch (e) { const err = new Error("notjson"); err.code = "notjson"; throw err; }
-  if (!j.ok) { const err = new Error(j.error || "failed"); err.code = j.error || "failed"; throw err; }
+  const url = TRACK_URL + '?key=' +
+    encodeURIComponent(accessKey) +
+    '&t=' + Date.now();
+
+  const r = await fetch(url);
+  const txt = await r.text();
+  const j = JSON.parse(txt);
+
+  if (!j.ok) throw new Error(j.error || 'failed');
+
   return j.days || [];
 }
 
