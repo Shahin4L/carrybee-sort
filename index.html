@@ -417,7 +417,7 @@ input{font:inherit;color:inherit}
 
         <div class="panel p-error">
           <h2>Video can't be loaded</h2>
-          <p>Check your internet connection, or ask your supervisor to confirm the video is available.</p>
+          <p id="videoErrorReason">Check your internet connection, or ask your supervisor to confirm the video is available.</p>
           <div class="btn-row"><button class="btn primary" onclick="location.reload()">Try again</button></div>
         </div>
 
@@ -667,7 +667,8 @@ function onYouTubeIframeAPIReady() {
   const vars = { autoplay: 0, controls: 0, disablekb: 1, fs: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, playsinline: 1, cc_load_policy: 0 };
   if (location.protocol.startsWith("http")) vars.origin = location.origin;
   player = new YT.Player("yt", {
-    host: "https://www.youtube-nocookie.com",
+    // Standard YouTube host avoids compatibility problems with some privacy-mode embeds.
+    host: "https://www.youtube.com",
     videoId: VIDEO_ID,
     playerVars: vars,
     events: {
@@ -704,7 +705,19 @@ function onYouTubeIframeAPIReady() {
           completeLoop();
         }
       },
-      onError() {
+      onError(e) {
+        // Surface the actual YouTube error instead of treating every failure as a network issue.
+        const reasons = {
+          2: "The YouTube video ID is invalid. Please contact your supervisor.",
+          5: "Your browser could not play this video. Try another browser.",
+          100: "This video is unavailable. Please confirm it is Public or Unlisted in YouTube Studio.",
+          101: "YouTube embedding is disabled. Enable Allow embedding in YouTube Studio.",
+          150: "YouTube embedding is disabled. Enable Allow embedding in YouTube Studio.",
+          153: "YouTube blocked the embed because the site referrer was not provided. Check browser privacy settings."
+        };
+        const reason = document.getElementById("videoErrorReason");
+        if (reason) reason.textContent = reasons[e.data] || "Video could not be loaded. Check the video availability and try again.";
+        console.warn("CarryBee training video: YouTube player error", e.data);
         setCover("error");
         stage.classList.add("no-controls");
       }
